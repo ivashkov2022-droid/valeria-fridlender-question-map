@@ -4,28 +4,30 @@
 
 import { FormEvent, useMemo, useState } from "react";
 
-const sphereData = [
+const spheres = [
   {
     id: "relationships",
     number: "01",
     title: "Отношения",
-    short: "любовь и близость",
-    intro: "Когда хочется понять не только другого человека, но и сценарий, который возникает между вами.",
+    note: "близость и выбор",
+    intro:
+      "Когда хочется понять не только другого человека, но и то, что происходит между вами.",
     questions: [
-      "Почему я повторяю один и тот же сценарий в отношениях?",
+      "Почему я снова оказываюсь в похожих отношениях?",
+      "Что происходит между нами сейчас?",
       "Как устроена наша совместимость?",
-      "Что сейчас происходит между нами?",
     ],
   },
   {
     id: "career",
     number: "02",
     title: "Карьера",
-    short: "работа и реализация",
-    intro: "Когда прежняя роль стала тесной, а следующая точка пока не складывается в ясный маршрут.",
+    note: "работа и реализация",
+    intro:
+      "Когда прежняя роль стала тесной, а следующий шаг пока не складывается в ясный маршрут.",
     questions: [
       "Почему я не чувствую себя на своём месте?",
-      "Какой формат работы раскрывает мои сильные стороны?",
+      "В каком деле раскрываются мои сильные стороны?",
       "Подходящий ли сейчас момент для перемен?",
     ],
   },
@@ -33,8 +35,9 @@ const sphereData = [
     id: "business",
     number: "03",
     title: "Бизнес и деньги",
-    short: "рост и решения",
-    intro: "Когда решение влияет на ресурсы, партнёрство и траекторию проекта — и нужен взгляд шире привычной логики.",
+    note: "рост и решения",
+    intro:
+      "Когда решение затрагивает ресурсы, партнёрство и будущее проекта — и хочется увидеть картину шире.",
     questions: [
       "Почему рост остановился именно сейчас?",
       "Подходим ли мы друг другу как партнёры?",
@@ -42,407 +45,288 @@ const sphereData = [
     ],
   },
   {
-    id: "relocation",
+    id: "change",
     number: "04",
-    title: "Переезд",
-    short: "место и перемены",
-    intro: "Когда меняется не только город, но и привычный ритм, окружение, работа и ощущение себя.",
+    title: "Перемены",
+    note: "переезд и новый этап",
+    intro:
+      "Когда меняется не только город или работа, но и привычный ритм, окружение и ощущение себя.",
     questions: [
-      "Что я на самом деле ищу в переезде?",
-      "Как новая среда может повлиять на мой ритм?",
-      "Как подготовиться к периоду больших перемен?",
+      "Что я на самом деле ищу в переменах?",
+      "Как подготовиться к новому этапу?",
+      "Что сейчас мешает мне решиться?",
     ],
   },
   {
     id: "family",
     number: "05",
-    title: "Семья и дети",
-    short: "связи и поколения",
-    intro: "Когда важно увидеть потребности близких и то, почему дома повторяются одни и те же ситуации.",
+    title: "Семья",
+    note: "дети и поколения",
+    intro:
+      "Когда важно лучше понимать близких и перестать ходить по кругу в повторяющихся ситуациях.",
     questions: [
-      "Почему в семье повторяются одни и те же конфликты?",
+      "Почему дома повторяется один и тот же конфликт?",
       "Как лучше понимать потребности ребёнка?",
       "Что создаёт напряжение между поколениями?",
     ],
   },
   {
-    id: "education",
+    id: "self",
     number: "06",
-    title: "Образование",
-    short: "выбор и развитие",
-    intro: "Когда вариантов много, а понять хочется главное: что действительно станет вашим инструментом роста.",
+    title: "О себе",
+    note: "смыслы и развитие",
+    intro:
+      "Когда главный вопрос не о событии, а о себе: своих желаниях, ритме и внутренней опоре.",
     questions: [
-      "Какое направление действительно подходит мне?",
-      "Когда лучше начинать обучение?",
-      "Как я усваиваю новое эффективнее?",
+      "Чего я хочу на самом деле?",
+      "Почему мне сложно сделать выбор?",
+      "На что я могу опереться сейчас?",
     ],
   },
 ];
 
-const methodSteps = [
+const journal = [
   {
-    index: "A",
-    title: "Астрология",
-    text: "Периоды, взаимосвязи и контекст ситуации — без обезличенного прогноза для знака зодиака.",
+    meta: "Отношения · 7 минут",
+    title: "Совместимость — это не только «подходим ли мы друг другу»",
   },
   {
-    index: "N",
-    title: "Нумерология",
-    text: "Повторяющиеся ритмы и индивидуальные числовые паттерны, связанные с вашим запросом.",
+    meta: "Выбор · 5 минут",
+    title: "Как задать вопрос, чтобы действительно получить ответ",
   },
   {
-    index: "Ψ",
-    title: "Цифровая психология",
-    text: "Особенности реакций, решений и коммуникации, которые помогают перевести анализ в действие.",
+    meta: "Бизнес · 9 минут",
+    title: "Что полезно увидеть до начала партнёрства",
+  },
+  {
+    meta: "Перемены · 6 минут",
+    title: "Почему новое иногда пугает сильнее, чем старое",
   },
 ];
 
 export default function Home() {
   const assetBase = import.meta.env.BASE_URL ?? "/";
-  const [activeSphere, setActiveSphere] = useState(sphereData[0].id);
-  const [selectedQuestion, setSelectedQuestion] = useState(sphereData[0].questions[0]);
-  const [questionDraft, setQuestionDraft] = useState(sphereData[0].questions[0]);
-  const [compatibilityReady, setCompatibilityReady] = useState(false);
-  const [questionSent, setQuestionSent] = useState(false);
+  const [activeId, setActiveId] = useState(spheres[0].id);
+  const [question, setQuestion] = useState(spheres[0].questions[0]);
+  const [sent, setSent] = useState(false);
 
-  const sphere = useMemo(
-    () => sphereData.find((item) => item.id === activeSphere) ?? sphereData[0],
-    [activeSphere],
+  const active = useMemo(
+    () => spheres.find((item) => item.id === activeId) ?? spheres[0],
+    [activeId],
   );
 
   function chooseSphere(id: string) {
-    const next = sphereData.find((item) => item.id === id) ?? sphereData[0];
-    setActiveSphere(next.id);
-    setSelectedQuestion(next.questions[0]);
-    setQuestionDraft(next.questions[0]);
-    requestAnimationFrame(() => document.querySelector("#question-map")?.scrollIntoView({ behavior: "smooth" }));
+    const next = spheres.find((item) => item.id === id) ?? spheres[0];
+    setActiveId(next.id);
+    setQuestion(next.questions[0]);
   }
 
-  function submitCompatibility(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setCompatibilityReady(true);
+  function chooseQuestion(value: string) {
+    setQuestion(value);
+    document.querySelector("#ask")?.scrollIntoView({ behavior: "smooth" });
   }
 
-  function submitQuestion(event: FormEvent<HTMLFormElement>) {
+  function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setQuestionSent(true);
+    setSent(true);
   }
 
   return (
-    <main className="site-shell">
+    <main id="top">
+      <header className="topbar">
+        <a className="brand" href="#top" aria-label="На главную">
+          <span className="brand-sign">VF</span>
+          <span>
+            <strong>Валерия Фридлендер</strong>
+            <small>астролог · нумеролог · цифровой психолог</small>
+          </span>
+        </a>
+        <nav aria-label="Навигация">
+          <a href="#directions">Сферы</a>
+          <a href="#about">О Валерии</a>
+          <a href="#method">Как это работает</a>
+        </nav>
+        <a className="header-link" href="#ask">Задать вопрос</a>
+      </header>
+
       <section className="hero" aria-labelledby="hero-title">
-        <header className="topbar">
-          <a className="brand" href="#top" aria-label="Валерия Фридлендер — главная">
-            <span className="brand-mark">VF</span>
-            <span className="brand-copy">
-              <strong>Валерия Фридлендер</strong>
-              <small>астролог · нумеролог · цифровой психолог</small>
-            </span>
-          </a>
-          <nav className="nav" aria-label="Основная навигация">
-            <a href="#question-map">Сферы</a>
-            <a href="#method">Метод</a>
-            <a href="#expert">О Валерии</a>
-          </nav>
-          <a className="nav-cta" href="#custom-question">Задать вопрос</a>
-        </header>
-
-        <div className="hero-grid" id="top">
-          <div className="hero-copy">
-            <p className="eyebrow"><span>01</span> персональный разбор ситуации</p>
-            <h1 id="hero-title">
-              Какой вопрос
-              <em>не даёт вам покоя?</em>
-            </h1>
-            <p className="hero-lead">
-              Один важный вопрос — индивидуальный разбор через астрологию,
-              нумерологию и цифровую психологию. Без общих прогнозов и готовых формул.
-            </p>
-            <div className="hero-actions">
-              <a className="button button-primary" href="#question-map">Выбрать сферу</a>
-              <a className="button button-ghost" href="#custom-question">Задать свой вопрос <span>↗</span></a>
-            </div>
-            <div className="signal-row" aria-label="Особенности разбора">
-              <span>1 конкретный вопрос</span>
-              <span>3 системы анализа</span>
-              <span>100% персонально</span>
-            </div>
+        <div className="hero-copy">
+          <p className="kicker"><span>Персональный разбор</span><i />Один вопрос — ваш ответ</p>
+          <h1 id="hero-title">
+            Какой вопрос
+            <em>не даёт вам покоя?</em>
+          </h1>
+          <p className="hero-lead">
+            Иногда ясность начинается не с совета, а с правильно заданного вопроса.
+            Посмотрим на вашу ситуацию через астрологию, нумерологию и психологию —
+            бережно, предметно и лично.
+          </p>
+          <div className="hero-actions">
+            <a className="primary-button" href="#directions">Найти свой вопрос <span>↗</span></a>
+            <a className="quiet-link" href="#about">Познакомиться с Валерией <span>↓</span></a>
           </div>
+          <p className="hero-note">Не общий прогноз. Не готовый сценарий. Разговор именно о вашей жизни.</p>
+        </div>
 
-          <div className="hero-visual" aria-label="Валерия Фридлендер">
-            <div className="chart-field" aria-hidden="true">
-              <div className="chart-ring ring-one" />
-              <div className="chart-ring ring-two" />
-              <div className="chart-ring ring-three" />
-              <div className="chart-axis axis-one" />
-              <div className="chart-axis axis-two" />
-              <span className="chart-code code-one">Ⅷ · CONTEXT</span>
-              <span className="chart-code code-two">DATA / BIRTH</span>
-              <span className="chart-code code-three">PERSONAL / SIGNAL</span>
-            </div>
-            <img
-              src={`${assetBase}images/valeria-hero.webp`}
-              alt="Валерия Фридлендер"
-            />
-            <div className="expert-chip">
-              <span className="status-dot" />
-              <div>
-                <small>Ваш вопрос разбирает лично</small>
-                <strong>Валерия Фридлендер</strong>
-              </div>
-            </div>
+        <div className="hero-portrait">
+          <div className="portrait-glow" />
+          <div className="soft-orbit orbit-a" />
+          <div className="soft-orbit orbit-b" />
+          <span className="orbit-word word-a">контекст</span>
+          <span className="orbit-word word-b">ритм</span>
+          <img src={`${assetBase}images/valeria-hero.webp`} alt="Валерия Фридлендер" />
+          <div className="portrait-caption">
+            <span>Личный разбор</span>
+            <strong>Валерия Фридлендер</strong>
           </div>
         </div>
 
-        <div className="sphere-strip" aria-label="Сферы вопросов">
-          <p>Где сейчас<br />нужен ответ?</p>
-          <div className="sphere-list">
-            {sphereData.map((item) => (
-              <button type="button" onClick={() => chooseSphere(item.id)} key={item.id}>
-                <span>{item.number}</span>{item.title}
-              </button>
-            ))}
-          </div>
-        </div>
+        <a className="scroll-note" href="#directions"><span>↓</span> Начните с того, что волнует</a>
       </section>
 
-      <section className="question-map section-light" id="question-map" aria-labelledby="question-map-title">
-        <div className="section-heading">
-          <p className="section-code">02 / КАРТА ВОПРОСОВ</p>
-          <h2 id="question-map-title">Начните не с услуги.<br /><em>Начните с того, что волнует.</em></h2>
-          <p>Выберите сферу — и посмотрите, на какой вопрос вы действительно хотите получить ответ.</p>
+      <section className="directions" id="directions" aria-labelledby="directions-title">
+        <div className="section-intro">
+          <p className="eyebrow">Карта жизненных вопросов</p>
+          <h2 id="directions-title">Не выбирайте услугу.<br /><em>Выберите то, что важно сейчас.</em></h2>
+          <p>Нажмите на близкую тему. Вопрос не обязан звучать идеально — достаточно узнать в нём себя.</p>
         </div>
 
-        <div className="question-console">
-          <div className="sphere-tabs" role="tablist" aria-label="Выберите сферу жизни">
-            {sphereData.map((item) => (
+        <div className="question-explorer">
+          <div className="sphere-list" role="tablist" aria-label="Сферы жизни">
+            {spheres.map((sphere) => (
               <button
+                key={sphere.id}
                 type="button"
                 role="tab"
-                aria-selected={activeSphere === item.id}
-                className={activeSphere === item.id ? "active" : ""}
-                onClick={() => {
-                  setActiveSphere(item.id);
-                  setSelectedQuestion(item.questions[0]);
-                  setQuestionDraft(item.questions[0]);
-                }}
-                key={item.id}
+                aria-selected={activeId === sphere.id}
+                className={activeId === sphere.id ? "active" : ""}
+                onClick={() => chooseSphere(sphere.id)}
               >
-                <span>{item.number}</span>
-                <span><strong>{item.title}</strong><small>{item.short}</small></span>
-                <b>↗</b>
+                <span className="sphere-number">{sphere.number}</span>
+                <span className="sphere-name"><strong>{sphere.title}</strong><small>{sphere.note}</small></span>
+                <span className="sphere-arrow">↗</span>
               </button>
             ))}
           </div>
 
-          <div className="question-panel" role="tabpanel">
-            <div className="panel-meta">
-              <span>Сфера / {sphere.number}</span>
-              <span>выбрано</span>
-            </div>
-            <h3>{sphere.title}</h3>
-            <p className="sphere-intro">{sphere.intro}</p>
-            <div className="question-options">
-              {sphere.questions.map((question, index) => (
-                <button
-                  type="button"
-                  className={selectedQuestion === question ? "selected" : ""}
-                  onClick={() => {
-                    setSelectedQuestion(question);
-                    setQuestionDraft(question);
-                  }}
-                  key={question}
-                >
-                  <span>{index + 1}</span>
-                  {question}
-                  <b aria-hidden="true">{selectedQuestion === question ? "●" : "○"}</b>
+          <div className="question-canvas" role="tabpanel">
+            <div className="canvas-orbit" aria-hidden="true" />
+            <p className="canvas-label">Сфера {active.number} · {active.title}</p>
+            <h3>{active.intro}</h3>
+            <p className="examples-label">Возможно, ваш вопрос звучит так:</p>
+            <div className="question-lines">
+              {active.questions.map((item) => (
+                <button type="button" key={item} onClick={() => chooseQuestion(item)}>
+                  <span>{item}</span><i>→</i>
                 </button>
               ))}
             </div>
-            <div className="selected-route">
-              <div>
-                <small>Ваш маршрут</small>
-                <strong>{selectedQuestion}</strong>
-              </div>
-              <a href="#custom-question">Перейти к вопросу <span>→</span></a>
-            </div>
+            <button className="own-question" type="button" onClick={() => chooseQuestion("")}>
+              У меня другой вопрос <span>↗</span>
+            </button>
           </div>
+        </div>
+
+        <div className="small-routes" aria-label="Быстрые маршруты">
+          <p>Можно начать ещё конкретнее</p>
+          <a href="#ask">Совместимость с партнёром <span>↗</span></a>
+          <a href="#ask">Подходящий момент для решения <span>↗</span></a>
+          <a href="#ask">Личный год и его задачи <span>↗</span></a>
         </div>
       </section>
 
-      <section className="method-section" id="method" aria-labelledby="method-title">
-        <div className="method-copy">
-          <p className="section-code">03 / МЕТОД</p>
+      <section className="about" id="about" aria-labelledby="about-title">
+        <div className="about-photo">
+          <div className="photo-shape" />
+          <img src={`${assetBase}images/valeria-expert.webp`} alt="Валерия Фридлендер" />
+          <p>15+ лет практики<br />с людьми и их историями</p>
+        </div>
+        <div className="about-copy">
+          <p className="eyebrow">Валерия Фридлендер</p>
+          <h2 id="about-title">За любыми данными<br /><em>я всегда вижу человека.</em></h2>
+          <blockquote>
+            «Мне важно не выдать красивый прогноз, а помочь вам увидеть ситуацию
+            объёмнее — так, чтобы после разговора стало легче сделать свой следующий шаг».
+          </blockquote>
+          <dl>
+            <div><dt>Лично</dt><dd>Каждый запрос я изучаю сама — без потоковых расшифровок.</dd></div>
+            <div><dt>Предметно</dt><dd>В центре не набор характеристик, а ваша реальная ситуация.</dd></div>
+            <div><dt>Понятно</dt><dd>Сложные взаимосвязи перевожу в человеческий язык и ясные выводы.</dd></div>
+          </dl>
+          <a className="text-link" href="#ask">Рассказать о своей ситуации <span>↗</span></a>
+        </div>
+      </section>
+
+      <section className="method" id="method" aria-labelledby="method-title">
+        <div className="method-heading">
+          <p className="eyebrow">Как это устроено</p>
           <h2 id="method-title">Не предсказание.<br /><em>Система координат.</em></h2>
-          <p className="method-lead">
-            В центре разбора — ваша реальная ситуация. Три подхода накладываются друг на друга,
-            чтобы увидеть контекст, повторяющиеся сценарии и возможные направления решения.
-          </p>
-          <div className="method-list">
-            {methodSteps.map((step) => (
-              <article key={step.index}>
-                <span>{step.index}</span>
-                <div><h3>{step.title}</h3><p>{step.text}</p></div>
-              </article>
-            ))}
-          </div>
+          <p>Три оптики помогают увидеть контекст, повторяющиеся сценарии и возможные направления решения.</p>
         </div>
-
-        <div className="analysis-visual" aria-label="Условная схема трёх слоёв анализа">
-          <div className="analysis-toolbar">
-            <span>PERSONAL ANALYSIS / 03 LAYERS</span>
-            <b>● LIVE</b>
-          </div>
-          <div className="orbit-system" aria-hidden="true">
-            <div className="orbit orbit-outer"><span>A</span><i /><i /><i /></div>
-            <div className="orbit orbit-middle"><span>N</span></div>
-            <div className="orbit orbit-inner"><span>Ψ</span></div>
-            <div className="crosshair horizontal" />
-            <div className="crosshair vertical" />
-            <strong>ВАШ<br />ВОПРОС</strong>
-          </div>
-          <div className="analysis-coordinates">
-            <span>01 / КОНТЕКСТ</span><span>02 / ПАТТЕРН</span><span>03 / ДЕЙСТВИЕ</span>
-          </div>
-          <p className="visual-disclaimer">
-            Схема показывает логику анализа и не является рассчитанной натальной картой.
-          </p>
+        <div className="method-flow">
+          <article><span>01</span><h3>Ваш вопрос</h3><p>Мы начинаем с того, что происходит в вашей жизни, а не со списка услуг.</p></article>
+          <article><span>02</span><h3>Три оптики</h3><p>Астрология, нумерология и цифровая психология дополняют друг друга.</p></article>
+          <article><span>03</span><h3>Личная ясность</h3><p>Вы получаете не директиву, а объёмную картину и точки для собственного решения.</p></article>
         </div>
-      </section>
-
-      <section className="compatibility" id="compatibility" aria-labelledby="compatibility-title">
-        <div className="compatibility-intro">
-          <p className="section-code">04 / БЫСТРЫЙ МАРШРУТ</p>
-          <h2 id="compatibility-title">Что происходит<br /><em>между вами?</em></h2>
-          <p>
-            Укажите исходные данные двух людей. Здесь не будет автоматического «процента любви»:
-            форма подготовит основу для содержательного сравнения.
-          </p>
-          <div className="compatibility-tags">
-            <span>эмоциональный ритм</span><span>коммуникация</span><span>совместные решения</span>
-          </div>
-        </div>
-
-        <form className="compatibility-form" onSubmit={submitCompatibility}>
-          <div className="form-topline"><span>COMPARE / TWO PEOPLE</span><span>01—02</span></div>
-          <label>
-            <span>Контекст отношений</span>
-            <select name="context" defaultValue="romantic">
-              <option value="romantic">Романтические отношения</option>
-              <option value="family">Семья</option>
-              <option value="business">Деловое партнёрство</option>
-            </select>
-          </label>
-          <div className="people-grid">
-            <fieldset>
-              <legend><span>01</span> Первый человек</legend>
-              <label><span>Имя</span><input name="personOneName" placeholder="Например, Анна" required /></label>
-              <label><span>Дата рождения</span><input type="date" name="personOneDate" required /></label>
-            </fieldset>
-            <div className="compare-sign" aria-hidden="true">×</div>
-            <fieldset>
-              <legend><span>02</span> Второй человек</legend>
-              <label><span>Имя</span><input name="personTwoName" placeholder="Например, Алексей" required /></label>
-              <label><span>Дата рождения</span><input type="date" name="personTwoDate" required /></label>
-            </fieldset>
-          </div>
-          {compatibilityReady ? (
-            <div className="form-success" role="status">
-              <span>✓</span><div><strong>Основа сравнения готова</strong><small>Следующий шаг — сформулировать ваш главный вопрос об этих отношениях.</small></div>
-              <a href="#custom-question">Продолжить →</a>
-            </div>
-          ) : (
-            <button className="submit-dark" type="submit">Подготовить сравнение <span>→</span></button>
-          )}
-          <p className="form-note">Это демонстрация логики сервиса. Автоматические выводы по введённым данным не формируются.</p>
-        </form>
-      </section>
-
-      <section className="expert-section" id="expert" aria-labelledby="expert-title">
-        <div className="expert-photo">
-          <img
-            src={`${assetBase}images/valeria-expert.webp`}
-            alt="Валерия Фридлендер в рабочем кабинете"
-          />
-          <span>Личный разбор,<br />не потоковая расшифровка</span>
-        </div>
-        <div className="expert-story">
-          <p className="section-code">05 / ЭКСПЕРТ</p>
-          <h2 id="expert-title">За схемой всегда<br /><em>остаётся человек.</em></h2>
-          <p className="expert-quote">
-            «Мне важно не выдать красивый прогноз, а помочь увидеть ситуацию объёмнее —
-            так, чтобы после разбора у вас появилась ясность, с которой можно действовать».
-          </p>
-          <div className="expert-principles">
-            <div><span>01</span><p><strong>Лично</strong>Я изучаю исходные данные и контекст вашего вопроса.</p></div>
-            <div><span>02</span><p><strong>Предметно</strong>Разбор строится вокруг ситуации, а не набора общих характеристик.</p></div>
-            <div><span>03</span><p><strong>Понятно</strong>Перевожу сложные взаимосвязи в человеческий язык и выводы.</p></div>
-          </div>
-          <a className="text-link" href="#custom-question">Обсудить свой вопрос <span>↗</span></a>
-        </div>
-      </section>
-
-      <section className="result-section" aria-labelledby="result-title">
-        <div className="section-heading compact">
-          <p className="section-code">06 / РЕЗУЛЬТАТ</p>
-          <h2 id="result-title">Не ещё больше информации.<br /><em>Больше ясности.</em></h2>
-        </div>
-        <div className="result-grid">
-          <article><span>01</span><h3>Картина ситуации</h3><p>Что влияет на ваш вопрос прямо сейчас и какие связи обычно остаются незаметными.</p></article>
-          <article><span>02</span><h3>Личный сценарий</h3><p>Какие индивидуальные особенности и повторяющиеся реакции участвуют в ситуации.</p></article>
-          <article><span>03</span><h3>Точки выбора</h3><p>Где находится пространство для решения — без директив и обещаний единственно верного пути.</p></article>
-          <article className="result-highlight"><span>04</span><h3>Ваш следующий шаг</h3><p>Конкретный ориентир, с которым можно продолжить разговор, принять решение или изменить действие.</p></article>
-        </div>
+        <p className="method-footnote">Астрологические символы здесь — язык анализа, а не декорация и не обещание магического ответа.</p>
       </section>
 
       <section className="journal" aria-labelledby="journal-title">
-        <div className="journal-head">
-          <div><p className="section-code">07 / БИБЛИОТЕКА СИТУАЦИЙ</p><h2 id="journal-title">Разобраться<br /><em>чуть глубже.</em></h2></div>
-          <p>Материалы о конкретных жизненных вопросах — основа для будущего тематического и SEO-развития сайта.</p>
+        <div className="journal-heading">
+          <div>
+            <p className="eyebrow">Журнал жизненных ситуаций</p>
+            <h2 id="journal-title">Почитать,<br /><em>пока вы прислушиваетесь.</em></h2>
+          </div>
+          <p>Короткие материалы без мистического тумана — о вопросах, которые возникают у обычных живых людей.</p>
         </div>
-        <div className="journal-grid">
-          <a href="#custom-question"><span>ОТНОШЕНИЯ · 7 МИН</span><h3>Совместимость — это не только «подходим ли мы друг другу»</h3><b>Читать материал ↗</b></a>
-          <a href="#custom-question"><span>БИЗНЕС · 9 МИН</span><h3>Что полезно проверить до начала партнёрства</h3><b>Читать материал ↗</b></a>
-          <a href="#custom-question"><span>ВЫБОР · 6 МИН</span><h3>Как сформулировать вопрос, чтобы получить предметный ответ</h3><b>Читать материал ↗</b></a>
+        <div className="journal-list">
+          {journal.map((item, index) => (
+            <a href="#ask" key={item.title}>
+              <span>0{index + 1}</span>
+              <div><small>{item.meta}</small><h3>{item.title}</h3></div>
+              <i>↗</i>
+            </a>
+          ))}
         </div>
       </section>
 
-      <section className="custom-question" id="custom-question" aria-labelledby="custom-question-title">
-        <div className="custom-intro">
-          <p className="section-code">08 / ВАШ ВОПРОС</p>
-          <h2 id="custom-question-title">Если вопрос уже<br /><em>звучит внутри.</em></h2>
-          <p>Опишите его своими словами. Сначала Валерия посмотрит, подходит ли запрос для такого формата, и только затем предложит дальнейшие шаги.</p>
-          <div className="privacy-note"><span>⌁</span><p><strong>Конфиденциально</strong>Данные нужны только для понимания вашего запроса.</p></div>
+      <section className="ask" id="ask" aria-labelledby="ask-title">
+        <div className="ask-copy">
+          <p className="eyebrow">Ваш вопрос</p>
+          <h2 id="ask-title">Если он уже<br /><em>звучит внутри.</em></h2>
+          <p>Опишите ситуацию своими словами. Сначала Валерия посмотрит, подходит ли запрос для такого формата, и только потом предложит следующий шаг.</p>
+          <div className="ask-promise"><span>⌁</span><p><strong>Бережно и конфиденциально</strong>Ваши данные нужны только для понимания запроса.</p></div>
         </div>
-        {questionSent ? (
-          <div className="question-success" role="status">
+
+        {sent ? (
+          <div className="sent-state" role="status">
             <span>✓</span>
-            <p className="section-code">ВОПРОС ПРИНЯТ</p>
-            <h3>Спасибо.<br />Маршрут начался.</h3>
-            <p>В рабочей версии здесь появится отправка заявки и информация о следующем шаге.</p>
-            <button type="button" onClick={() => setQuestionSent(false)}>Задать другой вопрос</button>
+            <p>Вопрос принят</p>
+            <h3>Спасибо.<br />Начало положено.</h3>
+            <small>В рабочей версии здесь появится отправка заявки и информация о следующем шаге.</small>
+            <button type="button" onClick={() => setSent(false)}>Задать другой вопрос</button>
           </div>
         ) : (
-          <form className="question-form" onSubmit={submitQuestion}>
-            <div className="question-form-grid">
-              <label><span>Как к вам обращаться?</span><input name="name" placeholder="Ваше имя" required /></label>
-              <label><span>Сфера вопроса</span><select name="sphere" value={activeSphere} onChange={(event) => setActiveSphere(event.target.value)}>{sphereData.map((item) => <option value={item.id} key={item.id}>{item.title}</option>)}</select></label>
-              <label className="wide"><span>Что вы хотите понять?</span><textarea name="question" value={questionDraft} onChange={(event) => setQuestionDraft(event.target.value)} rows={4} required /></label>
-              <label><span>Дата рождения</span><input type="date" name="birthDate" required /></label>
-              <label><span>Город рождения</span><input name="birthPlace" placeholder="Город, страна" required /></label>
-              <label className="wide"><span>Как с вами связаться?</span><input name="contact" placeholder="Telegram, WhatsApp или e-mail" required /></label>
-            </div>
-            <label className="consent"><input type="checkbox" required /><span>Я согласен(на) на обработку данных для ответа на мой запрос</span></label>
-            <button className="submit-light" type="submit">Передать вопрос Валерии <span>↗</span></button>
-            <p className="prototype-note">В прототипе форма показывает сценарий и не отправляет данные.</p>
+          <form className="ask-form" onSubmit={submit}>
+            <label><span>Как к вам обращаться?</span><input name="name" placeholder="Ваше имя" required /></label>
+            <label><span>Сфера вопроса</span>
+              <select value={activeId} onChange={(event) => chooseSphere(event.target.value)}>
+                {spheres.map((sphere) => <option key={sphere.id} value={sphere.id}>{sphere.title}</option>)}
+              </select>
+            </label>
+            <label className="full"><span>Что вы хотите понять?</span><textarea value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="Опишите ситуацию так, как чувствуете" rows={4} required /></label>
+            <label className="full"><span>Как с вами связаться?</span><input name="contact" placeholder="Telegram, WhatsApp или e-mail" required /></label>
+            <label className="consent full"><input type="checkbox" required /><span>Я согласен(на) на обработку данных для ответа на мой запрос</span></label>
+            <button className="form-button full" type="submit">Передать вопрос Валерии <span>↗</span></button>
+            <small className="prototype-note full">Это прототип: форма показывает сценарий и пока не отправляет данные.</small>
           </form>
         )}
       </section>
 
       <footer>
-        <a className="brand footer-brand" href="#top"><span className="brand-mark">VF</span><span className="brand-copy"><strong>Валерия Фридлендер</strong><small>персональная система координат</small></span></a>
-        <div className="footer-links"><a href="#question-map">Сферы</a><a href="#method">Метод</a><a href="#expert">О Валерии</a></div>
-        <p>© 2026 · Первый дизайн-прототип</p>
+        <a className="brand" href="#top"><span className="brand-sign">VF</span><span><strong>Валерия Фридлендер</strong><small>персональная система координат</small></span></a>
+        <p>© 2026 · Астрология о жизни, а не вместо неё</p>
+        <a href="#top">Наверх ↑</a>
       </footer>
     </main>
   );
