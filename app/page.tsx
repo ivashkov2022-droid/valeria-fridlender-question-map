@@ -1,7 +1,8 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import { FormEvent, useMemo, useState } from "react";
-import Image from "next/image";
 
 const sphereData = [
   {
@@ -97,6 +98,7 @@ const methodSteps = [
 ];
 
 export default function Home() {
+  const assetBase = import.meta.env.BASE_URL ?? "/";
   const [activeSphere, setActiveSphere] = useState(sphereData[0].id);
   const [selectedQuestion, setSelectedQuestion] = useState(sphereData[0].questions[0]);
   const [questionDraft, setQuestionDraft] = useState(sphereData[0].questions[0]);
@@ -178,13 +180,9 @@ export default function Home() {
               <span className="chart-code code-two">DATA / BIRTH</span>
               <span className="chart-code code-three">PERSONAL / SIGNAL</span>
             </div>
-            <Image
-              src="/images/valeria-hero.webp"
+            <img
+              src={`${assetBase}images/valeria-hero.webp`}
               alt="Валерия Фридлендер"
-              width={1680}
-              height={1355}
-              sizes="(max-width: 820px) 100vw, 45vw"
-              priority
             />
             <div className="expert-chip">
               <span className="status-dot" />
@@ -362,12 +360,9 @@ export default function Home() {
 
       <section className="expert-section" id="expert" aria-labelledby="expert-title">
         <div className="expert-photo">
-          <Image
-            src="/images/valeria-expert.webp"
+          <img
+            src={`${assetBase}images/valeria-expert.webp`}
             alt="Валерия Фридлендер в рабочем кабинете"
-            width={1600}
-            height={2399}
-            sizes="(max-width: 820px) 100vw, 45vw"
           />
           <span>Личный разбор,<br />не потоковая расшифровка</span>
         </div>
