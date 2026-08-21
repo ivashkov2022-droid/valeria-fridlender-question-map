@@ -29,6 +29,22 @@ const formats = [
   { code: "04", symbol: "◎", title: "Большой разбор", text: "Целостная карта личности, повторяющихся сценариев и точек развития." },
 ];
 
+const fontPairs = [
+  { id: "prata", name: "Prata × Manrope", note: "Строго и редакционно" },
+  { id: "cormorant", name: "Cormorant × Manrope", note: "Мягко и атмосферно" },
+  { id: "forum", name: "Forum × Onest", note: "Тонко и свободно" },
+  { id: "tenor", name: "Tenor Sans × Manrope", note: "Современно и спокойно" },
+] as const;
+
+const zodiacSigns = [
+  ["♈", "Овен", "21.03 — 20.04"], ["♉", "Телец", "21.04 — 21.05"],
+  ["♊", "Близнецы", "22.05 — 21.06"], ["♋", "Рак", "22.06 — 22.07"],
+  ["♌", "Лев", "23.07 — 23.08"], ["♍", "Дева", "24.08 — 22.09"],
+  ["♎", "Весы", "23.09 — 23.10"], ["♏", "Скорпион", "24.10 — 22.11"],
+  ["♐", "Стрелец", "23.11 — 21.12"], ["♑", "Козерог", "22.12 — 20.01"],
+  ["♒", "Водолей", "21.01 — 18.02"], ["♓", "Рыбы", "19.02 — 20.03"],
+] as const;
+
 const testimonials = [
   { quote: "Я пришла с одним вопросом об отношениях, а увидела всю систему — почему выбираю именно таких людей и где могу поступить иначе.", name: "Мария", theme: "Отношения" },
   { quote: "После разбора стало понятно, почему прежняя работа больше не подходит и какой следующий шаг действительно мой.", name: "Анна", theme: "Карьера" },
@@ -54,6 +70,8 @@ export default function Home() {
   const [dateOne, setDateOne] = useState("");
   const [dateTwo, setDateTwo] = useState("");
   const [compatibilityFocus, setCompatibilityFocus] = useState("Отношения");
+  const [fontPair, setFontPair] = useState("prata");
+  const [fontPanelOpen, setFontPanelOpen] = useState(false);
 
   const modalSphere = useMemo(() => spheres.find((item) => item.id === modalId) ?? null, [modalId]);
 
@@ -106,8 +124,17 @@ export default function Home() {
   );
 
   return (
-    <main id="top" className={`astralla-page ${loaded ? "is-loaded" : ""}`}>
+    <main id="top" data-font={fontPair} className={`astralla-page ${loaded ? "is-loaded" : ""}`}>
       <div className={`astralla-preloader ${loaded ? "is-hidden" : ""}`} aria-hidden="true"><i>✦</i><i>✧</i><i>✦</i></div>
+
+      <div className={`font-lab ${fontPanelOpen ? "is-open" : ""}`}>
+        <button className="font-lab-toggle" type="button" aria-expanded={fontPanelOpen} onClick={() => setFontPanelOpen((value) => !value)}><span>Aa</span><small>Шрифты</small></button>
+        <aside aria-label="Конструктор шрифтов">
+          <div className="font-lab-heading"><span>Примерить типографику</span><button type="button" aria-label="Закрыть конструктор" onClick={() => setFontPanelOpen(false)}>×</button></div>
+          <p>Выберите пару — весь сайт изменится сразу.</p>
+          {fontPairs.map((pair) => <button className={fontPair === pair.id ? "is-active" : ""} type="button" key={pair.id} onClick={() => setFontPair(pair.id)}><b>{pair.name}</b><small>{pair.note}</small></button>)}
+        </aside>
+      </div>
 
       <header className={`astralla-header ${scrolled ? "is-sticky" : ""}`}>
         <a className="astralla-wordmark" href="#top" aria-label="Валерия Фридлендер — главная"><strong>VALERIA</strong><small>ФРИДЛЕНДЕР</small></a>
@@ -117,7 +144,7 @@ export default function Home() {
         <div className={`mobile-navigation ${mobileOpen ? "is-open" : ""}`}><a href="#top" onClick={() => setMobileOpen(false)}>Главная</a>{nav}<a href="#ask" onClick={() => setMobileOpen(false)}>Задать вопрос</a></div>
       </header>
 
-      <section className="astralla-hero" aria-labelledby="hero-title" style={{ backgroundImage: `url(${assetBase}images/valeria-astralla-hero-v1.png)` }}>
+      <section className="astralla-hero" aria-labelledby="hero-title" style={{ backgroundImage: `url(${assetBase}images/valeria-direct-gaze-hero-v2.png)` }}>
         <span className="hero-star hero-star-one" aria-hidden="true">✦</span><span className="hero-star hero-star-two" aria-hidden="true">✧</span><span className="hero-star hero-star-three" aria-hidden="true">✦</span>
         <div className="astralla-hero-copy">
           <p>Астрология · Нумерология · Цифровая психология</p>
@@ -134,30 +161,38 @@ export default function Home() {
         <form className="guide-form" onSubmit={submitGuide}><label><span>Ваш вопрос</span><textarea name="guideQuestion" rows={3} placeholder="Например: почему отношения повторяются по одному сценарию?" required /></label><div className="guide-form-row"><label><span>Дата рождения</span><input name="birthDate" type="date" required /></label><button type="submit"><span>Продолжить</span></button></div><small>Ответ готовит Валерия лично — это не автоматическая расшифровка.</small></form>
       </section>
 
-      <section className="mosaic" aria-label="Основные направления">
-        {spheres.slice(0, 4).map((sphere, index) => <button className={`mosaic-card mosaic-card-${index + 1}`} type="button" key={sphere.id} onClick={() => setModalId(sphere.id)}><span className="mosaic-symbol" aria-hidden="true">{sphere.symbol}</span><small>0{index + 1} / направление</small><strong>{sphere.title}</strong><i>Открыть тему</i></button>)}
+      <section className="life-flow" aria-labelledby="life-flow-title">
+        <div className="life-flow-intro"><p className="eyebrow">Сферы жизни</p><h2 id="life-flow-title">Вопрос редко живёт<br /><em>только в одной точке</em></h2><p>Работа влияет на отношения, отношения — на выбор, выбор — на ощущение своего пути. Поэтому мы смотрим на ситуацию целиком.</p></div>
+        <div className="life-flow-list">{spheres.slice(0, 4).map((sphere, index) => <button type="button" key={sphere.id} onClick={() => setModalId(sphere.id)}><span className="life-flow-sign" aria-hidden="true"><i /><b>{sphere.symbol}</b></span><small>0{index + 1}</small><span className="life-flow-copy"><strong>{sphere.title}</strong><em>{sphere.note}</em></span><span className="life-flow-arrow">↗</span></button>)}</div>
       </section>
 
       <section className="formats" id="formats" aria-labelledby="formats-title">
         <div className="section-heading centered"><p className="eyebrow">Персональный формат</p><h2 id="formats-title">Один путь к ясности.<br /><em>Разные точки входа.</em></h2></div>
-        <div className="format-grid">{formats.map((item) => <article key={item.code}><div className="format-visual"><span>{item.symbol}</span><i /><i /><i /></div><small>{item.code} / разбор</small><h3>{item.title}</h3><p>{item.text}</p><a href="#ask">Узнать формат <b>→</b></a></article>)}</div>
+        <div className="format-river">{formats.map((item, index) => <article key={item.code}><div className="format-river-art" aria-hidden="true"><i /><i /><span>{item.symbol}</span></div><small>{item.code} / разбор</small><div><h3>{item.title}</h3><p>{item.text}</p></div><a href="#ask" aria-label={`Узнать формат: ${item.title}`}><span>узнать</span><b>↗</b></a><em aria-hidden="true">0{index + 1}</em></article>)}</div>
       </section>
 
       <section className="path-banner" aria-label="Персональный подход"><div className="path-stars" aria-hidden="true"><i>✦</i><i>✧</i><i>✦</i></div><p>Ваш путь не обязан быть понятен всем</p><h2>Trust your path</h2><a className="astralla-button" href="#ask"><span>Обсудить ситуацию</span></a></section>
 
+      <section className="zodiac-atlas" aria-labelledby="zodiac-title">
+        <div className="zodiac-mist zodiac-mist-one" aria-hidden="true" /><div className="zodiac-mist zodiac-mist-two" aria-hidden="true" />
+        <div className="zodiac-heading"><p className="eyebrow">Зодиакальный атлас</p><h2 id="zodiac-title">Двенадцать знаков.<br /><em>Один неповторимый человек.</em></h2><p>Знак — не готовый ответ и не ярлык. Это только одна линия в более сложной персональной карте.</p></div>
+        <div className="zodiac-orbit" aria-label="Двенадцать знаков зодиака">{zodiacSigns.map(([symbol, title, dates], index) => <button type="button" key={title} onClick={() => goToQuestion(`Хочу узнать, как знак ${title} проявляется в моей персональной карте.`)}><span className="zodiac-drawing" aria-hidden="true"><i /><i /><i /><b>{symbol}</b></span><strong>{title}</strong><small>{dates}</small><em>0{index + 1}</em></button>)}</div>
+      </section>
+
       <section className="directions" id="directions" aria-labelledby="directions-title">
         <div className="section-heading"><div><p className="eyebrow">Карта вопросов</p><h2 id="directions-title">Найдите свою<br /><em>сферу жизни</em></h2></div><p>Выберите тему. Внутри — примеры вопросов, с которыми можно прийти на персональный разбор.</p></div>
-        <div className="sphere-grid">{spheres.map((sphere, index) => <button type="button" key={sphere.id} onClick={() => setModalId(sphere.id)}><span className="sphere-art" aria-hidden="true"><i /><i /><b>{sphere.symbol}</b></span><small>0{index + 1}</small><h3>{sphere.title}</h3><p>{sphere.note}</p></button>)}</div>
+        <div className="sphere-flow">{spheres.map((sphere, index) => <button type="button" key={sphere.id} onClick={() => setModalId(sphere.id)}><span className="sphere-flow-number">0{index + 1}</span><span className="sphere-flow-art" aria-hidden="true"><i /><i /><b>{sphere.symbol}</b></span><span className="sphere-flow-copy"><h3>{sphere.title}</h3><p>{sphere.note}</p></span><span className="sphere-flow-arrow">→</span></button>)}</div>
       </section>
 
       <section className="compatibility" id="compatibility" aria-labelledby="compatibility-title">
+        <div className="compatibility-aura" aria-hidden="true"><span>♀</span><i /><b>♂</b></div>
         <div className="compatibility-copy"><p className="eyebrow light">Быстрый сценарий</p><h2 id="compatibility-title">Совместимость<br /><em>двух людей</em></h2><p>Форма собирает исходные данные для личного разбора — без случайного процента и универсальных формулировок.</p><ul><li><span>A</span> точки притяжения</li><li><span>B</span> зоны напряжения</li><li><span>C</span> сценарии взаимодействия</li></ul></div>
         <div className="compatibility-tool"><div className="tool-header"><span>VF / COMPATIBILITY</span><span>INPUT 02</span></div>{compatibilityReady ? <div className="compatibility-result" role="status"><p>Данные для запроса собраны</p><h3>{dateOne}<span> × </span>{dateTwo}</h3><dl><div><dt>Фокус</dt><dd>{compatibilityFocus}</dd></div><div><dt>Формат</dt><dd>Персональный разбор Валерии</dd></div></dl><button type="button" onClick={() => goToQuestion(`Хочу разобрать совместимость. Фокус: ${compatibilityFocus}. Даты: ${dateOne} и ${dateTwo}.`, "relationships")}>Продолжить с этим вопросом <span>→</span></button><button className="tool-reset" type="button" onClick={() => setCompatibilityReady(false)}>Изменить данные</button></div> : <form className="compatibility-form" onSubmit={prepareCompatibility}><label><span>Дата рождения · человек 01</span><input type="date" value={dateOne} onChange={(event) => setDateOne(event.target.value)} required /></label><div className="match-line"><span>01</span><i /><b>×</b><i /><span>02</span></div><label><span>Дата рождения · человек 02</span><input type="date" value={dateTwo} onChange={(event) => setDateTwo(event.target.value)} required /></label><label><span>Что важно понять</span><select value={compatibilityFocus} onChange={(event) => setCompatibilityFocus(event.target.value)}><option>Отношения</option><option>Сексуальная совместимость</option><option>Деловое партнёрство</option></select></label><button type="submit"><span>Собрать запрос</span></button><small>Результат не генерируется автоматически. Валерия изучает обе даты и контекст вашей ситуации.</small></form>}</div>
       </section>
 
       <section className="testimonials" aria-labelledby="testimonials-title"><div className="section-heading centered"><p className="eyebrow">После разбора</p><h2 id="testimonials-title">Когда связи становятся<br /><em>видимыми</em></h2></div><div className="testimonial-grid">{testimonials.map((item, index) => <figure key={item.name}><span aria-hidden="true">“</span><blockquote>{item.quote}</blockquote><figcaption><b>{item.name}</b><small>0{index + 1} · {item.theme}</small></figcaption></figure>)}</div></section>
 
-      <section className="about" id="about" aria-labelledby="about-title"><figure><div className="about-image"><img src={`${assetBase}images/valeria-astro-profile.jpg`} alt="Валерия Фридлендер" /><div className="about-chart" aria-hidden="true"><i /><i /><i /><span>☉</span></div></div><figcaption><span>Эксперт</span><b>Валерия Фридлендер</b></figcaption></figure><div className="about-copy"><p className="eyebrow">О Валерии</p><h2 id="about-title">Расчёт — только начало.<br /><em>В центре всегда человек.</em></h2><p className="about-lead">Валерия соединяет астрологию, нумерологию и цифровую психологию. Поэтому разговор начинается не с абстрактного описания характера, а с ситуации, которая требует решения сейчас.</p><blockquote>«Моя задача — не решить за вас, а показать связи, которые трудно заметить изнутри ситуации».</blockquote><dl><div><dt>01</dt><dd><b>Лично</b><span>Каждый запрос Валерия изучает сама.</span></dd></div><div><dt>02</dt><dd><b>Предметно</b><span>В центре — конкретный вопрос, а не набор характеристик.</span></dd></div><div><dt>03</dt><dd><b>Понятно</b><span>Выводы переводятся в ясный человеческий язык.</span></dd></div></dl><a className="text-link" href="#ask">Обсудить свою ситуацию</a></div></section>
+      <section className="about" id="about" aria-labelledby="about-title"><figure><div className="about-image"><img src={`${assetBase}images/valeria-about-editorial-v2.png`} alt="Валерия Фридлендер" /><div className="about-chart" aria-hidden="true"><i /><i /><i /><span>☉</span></div></div><figcaption><span>Эксперт</span><b>Валерия Фридлендер</b></figcaption></figure><div className="about-copy"><p className="eyebrow">О Валерии</p><h2 id="about-title">Расчёт — только начало.<br /><em>В центре всегда человек.</em></h2><p className="about-lead">Валерия соединяет астрологию, нумерологию и цифровую психологию. Поэтому разговор начинается не с абстрактного описания характера, а с ситуации, которая требует решения сейчас.</p><blockquote>«Моя задача — не решить за вас, а показать связи, которые трудно заметить изнутри ситуации».</blockquote><dl><div><dt>01</dt><dd><b>Лично</b><span>Каждый запрос Валерия изучает сама.</span></dd></div><div><dt>02</dt><dd><b>Предметно</b><span>В центре — конкретный вопрос, а не набор характеристик.</span></dd></div><div><dt>03</dt><dd><b>Понятно</b><span>Выводы переводятся в ясный человеческий язык.</span></dd></div></dl><a className="text-link" href="#ask">Обсудить свою ситуацию</a></div></section>
 
       <section className="journal" id="journal" aria-labelledby="journal-title"><div className="section-heading"><div><p className="eyebrow">Материалы</p><h2 id="journal-title">Жизненные вопросы.<br /><em>Без мистического тумана.</em></h2></div><p>Конкретные темы помогают заранее понять подход Валерии и точнее сформулировать собственный запрос.</p></div><div className="article-grid">{articles.map((article) => <a href="#ask" key={article.number}><span>{article.number}</span><i aria-hidden="true">{article.sign}</i><small>{article.meta}</small><h3>{article.title}</h3><b>Читать материал →</b></a>)}</div></section>
 
